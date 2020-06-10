@@ -91,8 +91,7 @@ void insereCarro(Estacionamento *e, Rua *rua, int placa){
             e->head->next=NULL;
             e->tail=novo_carro;
         }else{
-            Carro *aux= (Carro*)malloc(sizeof(Carro));
-            aux= e->head;
+            Carro *aux= e->head;
             
             for(int i=0; i < e->size; i++){
                 if(aux->next==NULL){
@@ -118,8 +117,7 @@ void insereCarro(Estacionamento *e, Rua *rua, int placa){
             rua->head->next=NULL;
             rua->tail=novo_carro;
         } else{
-            Carro *aux2= (Carro*)malloc(sizeof(Carro));
-            aux2= rua->head;
+            Carro *aux2= rua->head;
 
             for(int i=0; i < rua->size; i++){
                 if(aux2->next==NULL){
@@ -137,7 +135,8 @@ void insereCarro(Estacionamento *e, Rua *rua, int placa){
 
 void removeCarro(Estacionamento *e, Rua *rua, int placa){
     if((e->head!=NULL)and(e->size!=0)){
-        Carro *aux3= (Carro*)malloc(sizeof(Carro));
+        
+        Carro *aux3= e->head;
         Carro *aux4= (Carro*)malloc(sizeof(Carro));
         int verify=0;
 
@@ -146,12 +145,10 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
 
         //se tiver alguem na linha de espera, automaticamente 
         //entra na ultima vaga do estacionamento.
-        aux3= e->head;
         int i=0;
         for( i ; i < e->size; i++){
             if(aux3->placa == placa){
-                Carro *auxAddDeslocacoes= (Carro*)malloc(sizeof(Carro));
-                auxAddDeslocacoes= aux3;
+                Carro *auxAddDeslocacoes= aux3;
                 
                 printf("Carro removido!\n");
                 printf("Placa: %i \n", aux3->placa);
@@ -186,13 +183,11 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
 
                 if(rua->size > 0){
                     Carro *entra_carro= (Carro*)malloc(sizeof(Carro));
-                    int x;
-                    x=rua->head->placa;
+                    int x=rua->head->placa;
                     entra_carro->placa= x;
                     entra_carro->nDeslocamentos=0;
 
-                    Carro *auxAdd= (Carro*)malloc(sizeof(Carro));
-                    auxAdd= e->head;
+                    Carro *auxAdd= e->head;
             
                     for(int i=0; i < e->size+1; i++){
                         if(auxAdd->next==NULL){
@@ -224,8 +219,7 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
         //Se nao encontrar no estacionamento, entao é 
         //procurado na fila de espera automaticamente.
         if(verify==0){
-            Carro *aux5= (Carro*)malloc(sizeof(Carro));
-            aux5= rua->head;
+            Carro *aux5= rua->head;
             int i=0;
             for( i ; i < rua->size; i++){
                 if(aux5->placa == placa){
@@ -262,8 +256,7 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
 }
 
 void mostraFilas(Estacionamento *e, Rua *rua){
-    Carro *aux6 = (Carro*)malloc(sizeof(Carro));
-    aux6= rua->head;
+    Carro *aux6= rua->head;
 
     printf("Fila de espera: %i carros\n", rua->size);
     printf("Entrada <- <- <- <-\n");
@@ -281,4 +274,3 @@ void mostraFilas(Estacionamento *e, Rua *rua){
     }
 
 }
-
