@@ -9,14 +9,14 @@ typedef struct sCarro{
     int nDeslocamentos;
 } Carro;
 
-typedef struct sRua{ //entrada do estacionamento usarei lista encadeada, aqui pois o tamanho da fila é indefinida
-    struct sCarro *head;  //HEAD- Próximo da Entrada, primeiro da fila
+typedef struct sRua{ 
+    struct sCarro *head;  //HEAD- Proximo da Entrada, primeiro da fila
     struct sCarro *tail;  //TAIL- Longe da Entrada, ultimo carro da fila
     int size;
 } Rua;
 
-typedef struct sEstacionamento{ //Estacionamento usarei Vetor pq tem uma qtd limitada de vagas
-    struct sCarro *head;  //HEAD- Próximo da saida, primeiro da fila
+typedef struct sEstacionamento{ 
+    struct sCarro *head;  //HEAD- Proximo da saida, primeiro da fila
     struct sCarro *tail;  //TAIL- Longe da saida, ultimo carro da fila
     int size;
 } Estacionamento;
@@ -26,6 +26,7 @@ Estacionamento *criaEstacionamento();
 void insereCarro(Estacionamento *e, Rua *rua, int placa);
 void removeCarro(Estacionamento *e, Rua *rua, int placa);
 void mostraFilas(Estacionamento *e, Rua *rua);
+void destroiFilas(Estacionamento *e, Rua *rua);
 
 main(){
     Estacionamento *e= criaEstacionamento();
@@ -60,6 +61,10 @@ main(){
     //removeCarro(e, rua, 13);
 
     mostraFilas(e, rua);
+    destroiFilas(e, rua);
+    mostraFilas(e, rua);
+
+    
 }
 
 Rua *criaRua(){
@@ -91,8 +96,10 @@ void insereCarro(Estacionamento *e, Rua *rua, int placa){
             e->head->next=NULL;
             e->tail=novo_carro;
         }else{
-            Carro *aux= e->head;
             
+            //percorre o estacionamento a partir do Head 
+            //ate achar uma vaga vazia e adiciona o carro.
+            Carro *aux= e->head;
             for(int i=0; i < e->size; i++){
                 if(aux->next==NULL){
                     novo_carro->prev=aux;
@@ -137,7 +144,6 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
     if((e->head!=NULL)and(e->size!=0)){
         
         Carro *aux3= e->head;
-        Carro *aux4= (Carro*)malloc(sizeof(Carro));
         int verify=0;
 
         //Verifica se a placa pertence a algum 
@@ -179,7 +185,7 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
 
                 free(aux3);
                 e->size--;
-                verify=1;
+                verify=1; 
 
                 if(rua->size > 0){
                     Carro *entra_carro= (Carro*)malloc(sizeof(Carro));
@@ -187,8 +193,9 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
                     entra_carro->placa= x;
                     entra_carro->nDeslocamentos=0;
 
+                    //percorre o estacionamento a partir do Head ate achar 
+                    //uma vaga vazia e adiciona o Head/primeiro da fila de espera.
                     Carro *auxAdd= e->head;
-            
                     for(int i=0; i < e->size+1; i++){
                         if(auxAdd->next==NULL){
                             entra_carro->prev=auxAdd;
@@ -200,7 +207,8 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
                         auxAdd=auxAdd->next;
                     }
 
-                    aux4=rua->head;
+                    //Exclui o primeiro da fila de espera
+                    Carro *aux4=rua->head;
                     rua->head = aux4->next;
                     if(rua->head==NULL){
                         rua->tail=NULL;
@@ -258,7 +266,7 @@ void removeCarro(Estacionamento *e, Rua *rua, int placa){
 void mostraFilas(Estacionamento *e, Rua *rua){
     Carro *aux6= rua->head;
 
-    printf("Fila de espera: %i carros\n", rua->size);
+    printf("\n\nFila de espera: %i carros\n", rua->size);
     printf("Entrada <- <- <- <-\n");
     for(int i=0; i < rua->size; i++){
         printf("%i ",aux6->placa);
@@ -273,4 +281,58 @@ void mostraFilas(Estacionamento *e, Rua *rua){
         aux6=aux6->next;
     }
 
+}
+
+void destroiFilas(Estacionamento *e, Rua *rua){
+    Carro *auxDestroiCarros;
+    
+    printf("\n\n");
+    //removendo todos os carros do estacionamento
+    while(e->size>0){
+        auxDestroiCarros= e->head;
+        if(auxDestroiCarros == e->head){
+            e->head = auxDestroiCarros->next;
+            if(e->head==NULL){
+                e->tail=NULL;
+            }else{
+                auxDestroiCarros->next->prev=NULL;
+            }
+        }else{
+            auxDestroiCarros->prev->next = auxDestroiCarros->next;
+            if(auxDestroiCarros->next==NULL){
+                e->tail=auxDestroiCarros->prev;
+            }else{
+                auxDestroiCarros->next->prev = auxDestroiCarros->prev;
+            }
+        }
+        printf("Carro excluido, placa: %i\n", auxDestroiCarros->placa);
+        free(auxDestroiCarros);
+        e->size--;
+    }
+    
+    //removendo todos os carros da linha de espera
+    while(rua->size>0){
+        auxDestroiCarros= rua->head;
+        if(auxDestroiCarros == rua->head){
+            rua->head = auxDestroiCarros->next;
+            if(rua->head==NULL){
+                rua->tail=NULL;
+            }else{
+                auxDestroiCarros->next->prev=NULL;
+            }
+        }else{
+            auxDestroiCarros->prev->next = auxDestroiCarros->next;
+            if(auxDestroiCarros->next==NULL){
+                rua->tail=auxDestroiCarros->prev;
+            }else{
+                auxDestroiCarros->next->prev = auxDestroiCarros->prev;
+            }
+        }
+        printf("Carro excluido, placa: %i\n", auxDestroiCarros->placa);
+        free(auxDestroiCarros);
+        rua->size--;
+    }    
+
+    free(e);
+    free(rua);
 }
