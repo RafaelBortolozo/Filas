@@ -63,8 +63,6 @@ main(){
     mostraFilas(e, rua);
     destroiFilas(e, rua);
     mostraFilas(e, rua);
-
-    
 }
 
 Rua *criaRua(){
@@ -287,48 +285,32 @@ void destroiFilas(Estacionamento *e, Rua *rua){
     Carro *auxDestroiCarros;
     
     printf("\n\n");
-    //removendo todos os carros do estacionamento
+    //removendo todos os carros do estacionamento pelo head
     while(e->size>0){
         auxDestroiCarros= e->head;
-        if(auxDestroiCarros == e->head){
-            e->head = auxDestroiCarros->next;
-            if(e->head==NULL){
-                e->tail=NULL;
-            }else{
-                auxDestroiCarros->next->prev=NULL;
-            }
+        e->head = auxDestroiCarros->next;
+        if(e->head==NULL){
+            e->tail=NULL;
         }else{
-            auxDestroiCarros->prev->next = auxDestroiCarros->next;
-            if(auxDestroiCarros->next==NULL){
-                e->tail=auxDestroiCarros->prev;
-            }else{
-                auxDestroiCarros->next->prev = auxDestroiCarros->prev;
-            }
+            auxDestroiCarros->next->prev=NULL;
         }
-        printf("Carro excluido, placa: %i\n", auxDestroiCarros->placa);
+    
+        printf("Carro destruido, placa: %i\n", auxDestroiCarros->placa);
         free(auxDestroiCarros);
         e->size--;
     }
     
-    //removendo todos os carros da linha de espera
+    //removendo todos os carros da linha de espera pelo head
     while(rua->size>0){
         auxDestroiCarros= rua->head;
-        if(auxDestroiCarros == rua->head){
-            rua->head = auxDestroiCarros->next;
-            if(rua->head==NULL){
-                rua->tail=NULL;
-            }else{
-                auxDestroiCarros->next->prev=NULL;
-            }
+        rua->head = auxDestroiCarros->next;
+        if(rua->head==NULL){
+            rua->tail=NULL;
         }else{
-            auxDestroiCarros->prev->next = auxDestroiCarros->next;
-            if(auxDestroiCarros->next==NULL){
-                rua->tail=auxDestroiCarros->prev;
-            }else{
-                auxDestroiCarros->next->prev = auxDestroiCarros->prev;
-            }
+            auxDestroiCarros->next->prev=NULL;
         }
-        printf("Carro excluido, placa: %i\n", auxDestroiCarros->placa);
+        
+        printf("Carro destruido, placa: %i\n", auxDestroiCarros->placa);
         free(auxDestroiCarros);
         rua->size--;
     }    
